@@ -93,8 +93,8 @@ class LinkedList extends ReplicaOfArray {
 		super() // Don't worry about this too much. It's required because I'm
 			// INHERITING from another class. You can tell I'm inheriting
 			// because this class has `extends ReplicaOfArray' above.
-		this.factory	= factory || ListNode
-		this.head	= head || null
+		this.factory	= factory	|| ListNode
+		this.head	= head		|| null
 	}
 /***
  *** Core methods, these look the same as textbook linked list algorithms 
@@ -208,9 +208,10 @@ class LinkedList extends ReplicaOfArray {
 		if (pos == 0) {
 			newNode.nextNode = tn
 			this.head = newNode
+			return true
 		}
 		newNode.nextNode = null
-		// Get the previous index and node.
+		// Get the (pos-1)th index and node.
 		for (let i = 1; i < pos; i++) {
 			if (!tn) return false
 			tn = tn.nextNode
@@ -232,13 +233,11 @@ class LinkedList extends ReplicaOfArray {
 	distance(left_arg, right_arg) {
 		let [p, i] = this.findPrevious(left_arg)
 		if (i == null) return false // not found
-		// I build a brand-new linked list, starting at the first match of arg.
-		// Of course, I don't have to do this if the left arg happens to be the head
-		// of this LinkedList.
-		if (p)
-			[p, i] = new LinkedList(this.factory, p.nextNode).findPrevious(right_arg)
-		else
-			[p, i] = this.findPrevious(right_arg)
+		if (p) // the distance can be computed by chopping the linked list to start at left arg
+			// I build a brand-new linked list, starting at the node matching left arg
+			i = new LinkedList(this.factory, p.nextNode).index(right_arg)
+		else // the distance between left and right equals the position of the right arg
+			i = this.index(right_arg)
 		// the new index is the distance from the LinkedList with head at left_arg, to the match at right arg
 		return i
 	}
