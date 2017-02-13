@@ -2,11 +2,11 @@ describe('LinkedList', function() {
   var list;
 
   beforeEach(function(){
-    list = new List();
+    list = new LinkedList();
   });
 
   it.skip('should start with zero elements', function() {
-    expect(list._length).to.eq(0);
+    expect(list.length).to.eq(0);
   });
 
   it.skip('should set its default head to null', function(){
@@ -20,9 +20,9 @@ describe('LinkedList', function() {
         expect(list.head.data).to.eq('pizza');
       });
 
-      it.skip('should increment the _length of the list', function(){
+      it.skip('should increment the length of the list', function(){
         list.push('pizza');
-        expect(list._length).to.eq(1);
+        expect(list.length).to.eq(1);
       });
     });
 
@@ -31,7 +31,7 @@ describe('LinkedList', function() {
         list.push('pizza');
         list.push('stromboli');
         list.push('mushroom');
-        expect(list._length).to.eq(3);
+        expect(list.length).to.eq(3);
       });
 
       it.skip('should assign the head to the first element pushed', function(){
@@ -45,18 +45,18 @@ describe('LinkedList', function() {
       it.skip('should attach the second element to the first element', function(){
         list.push('pizza');
         list.push('stromboli');
-        expect(list.head.nextNode.data).to.eq('stromboli');
+        expect(list.head.next.data).to.eq('stromboli');
       });
 
-      it.skip('should attach nextNodes in sequential order', function(){
+      it.skip('should attach nexts in sequential order', function(){
         list.push('pizza');
         list.push('stromboli');
         list.push('mushroom');
         list.push('peanutbutter');
         expect(list.head.data).to.eq('pizza');
-        expect(list.head.nextNode.data).to.eq('stromboli');
-        expect(list.head.nextNode.nextNode.data).to.eq('mushroom');
-        expect(list.head.nextNode.nextNode.nextNode.data).to.eq('peanutbutter');
+        expect(list.head.next.data).to.eq('stromboli');
+        expect(list.head.next.next.data).to.eq('mushroom');
+        expect(list.head.next.next.next.data).to.eq('peanutbutter');
       });
     });
   });
@@ -67,16 +67,16 @@ describe('LinkedList', function() {
         expect(list.pop()).to.eq(null);
       });
 
-      it.skip('should not decrement the _length', function(){
-        expect(list._length).to.eq(0);
+      it.skip('should not decrement the length', function(){
+        expect(list.length).to.eq(0);
       });
     });
 
     context('with one element', function(){
-      it.skip('should change the _length', function(){
+      it.skip('should change the length', function(){
         list.push('hello');
         var result = list.pop();
-        expect(list._length).to.eq(0);
+        expect(list.length).to.eq(0);
       });
 
       it.skip('should set the list head to null', function(){
@@ -110,17 +110,17 @@ describe('LinkedList', function() {
 
         var output = list.pop();
         expect(output.data).to.eq('today');
-        expect(list._length).to.eq(2);
+        expect(list.length).to.eq(2);
 
         var output2 = list.pop();
         expect(output2.data).to.eq('world');
-        expect(output2.nextNode).to.eq(null);
-        expect(list._length).to.eq(1);
+        expect(output2.next).to.eq(null);
+        expect(list.length).to.eq(1);
 
         var output3 = list.pop();
         expect(output3.data).to.eq('hello');
-        expect(output3.nextNode).to.eq(null);
-        expect(list._length).to.eq(0);
+        expect(output3.next).to.eq(null);
+        expect(list.length).to.eq(0);
       });
     });
   });
@@ -130,14 +130,14 @@ describe('LinkedList', function() {
       it.skip('deletes a solo node', function(){
         list.push('hello');
         list.delete('hello');
-        expect(list._length).to.eq(0);
+        expect(list.length).to.eq(0);
         expect(list.head).to.eq(null);
       });
 
       it.skip('does not perform a delete when a node does not match', function(){
         list.push('hello');
         list.delete('goodbye');
-        expect(list._length).to.eq(1);
+        expect(list.length).to.eq(1);
         expect(list.head.data).to.eq('hello');
       });
     });
@@ -152,20 +152,20 @@ describe('LinkedList', function() {
       });
 
       it.skip('changes the list _.length', function(){
-        expect(list.head.nextNode.data).to.eq('darkness');
-        expect(list._length).to.eq(5);
+        expect(list.head.next.data).to.eq('darkness');
+        expect(list.length).to.eq(5);
         list.delete('friend');
-        expect(list._length).to.eq(4);
+        expect(list.length).to.eq(4);
         list.delete('my');
-        expect(list._length).to.eq(3);
+        expect(list.length).to.eq(3);
         list.delete('happy');
-        expect(list._length).to.eq(3);
+        expect(list.length).to.eq(3);
       });
 
-      it.skip('resets the nextNode property on the node before the deleted node', function(){
-        expect(list.head.nextNode.data).to.eq('darkness');
+      it.skip('resets the next property on the node before the deleted node', function(){
+        expect(list.head.next.data).to.eq('darkness');
         list.delete('darkness');
-        expect(list.head.nextNode.data).to.eq('my');
+        expect(list.head.next.data).to.eq('my');
       });
 
       it.skip('resets the list.head if deleting the first node', function(){
@@ -255,7 +255,7 @@ describe('LinkedList', function() {
     it.skip('should return true the node if node in list', function(){
       var result = list.find("hello");
       expect(result.data).to.eq('hello');
-      expect(result.nextNode.data).to.eq('world');
+      expect(result.next.data).to.eq('world');
     });
 
     it.skip('should return null if node is missing', function(){
@@ -285,10 +285,10 @@ describe('LinkedList', function() {
     });
 
     it.skip('should insert nodes', function(){
-      expect(list._length).to.eq(2);
+      expect(list.length).to.eq(2);
       list.insert(1, 'and');
       list.insert(3, 'night');
-      expect(list._length).to.eq(4);
+      expect(list.length).to.eq(4);
       expect(list.toArray()).to.deep.equal(['dark', 'and', 'stormy', 'night']);
     });
   });
@@ -300,10 +300,10 @@ describe('LinkedList', function() {
     });
 
     it.skip('should insert nodes after other nodes', function(){
-      expect(list._length).to.eq(2);
+      expect(list.length).to.eq(2);
       list.insertAgfter('dark', 'and');
       list.insertAfter('stormy', 'night');
-      expect(list._length).to.eq(4);
+      expect(list.length).to.eq(4);
       expect(list.toArray()).to.deep.equal(['dark', 'and', 'stormy', 'night']);
     });
   });
