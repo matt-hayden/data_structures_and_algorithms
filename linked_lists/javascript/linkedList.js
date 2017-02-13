@@ -116,11 +116,11 @@ class LinkedList extends ReplicaOfArray {
 	 */
 		return (this.getEnd().nextNode = other_linked_list.head)
 	}
-	push(arg) { // only one argument, unlike Array.push(..args)
+	push(...args) { // only one argument, unlike Array.push(..args)
 	/*
 	 * Unlike Array.push, I do not return the latest number of elements
 	 */
-		let newNode = new this.factory(arg)
+		let newNode = new this.factory(...args)
 		newNode.nextNode = null
 		if (this.head) this.getEnd().nextNode = newNode
 		else this.head = newNode
@@ -138,7 +138,7 @@ class LinkedList extends ReplicaOfArray {
 			return tn.valueOf()
 		} else return null // undefined might be more appropriate, but the test asks for null
 	}
-	shift(arg) {
+	shift() {
 		if (this.head) {
 			let h = this.head
 			this.head = h.nextNode // could be null
@@ -149,7 +149,7 @@ class LinkedList extends ReplicaOfArray {
  *** JavaScript utility methods, hinted in linkedList_test.js
  *** None of these are very textbook
  ***/
-	findPrevious(needle, value_if_not_found=[null, null]) {
+	findPrevious(needle, matcher=(a,b)=>{return (a==b)}, value_if_not_found=[null, null]) {
 	/***
 	 *** I return a tuple, [previousNode, index] where (previousNode.nextNode.valueOf() == needle)
 	 *** or [null, 0] if at the head of the list
@@ -164,20 +164,19 @@ class LinkedList extends ReplicaOfArray {
 		let tn = this.head
 		let i = 0
 		while (tn) {
-			if (needle == tn.valueOf()) return [ln, i]
+			if (matcher(tn.valueOf(), needle)) return [ln, i]
 			ln = tn
 			tn = tn.nextNode
 			i++
 		}
 		return value_if_not_found
 	}
-	find(needle) {
+	find(...args) {
 	/***
-	 *** Not a very useful function. If needle exists exactly, then it's returned, else null
-	 ***
-	 *** Spelled out in linkedList_test.js
+	 *** Not a very useful function. Takes the exact same arguments as findPrevious, as demonstrated
+	 *** by the (...args) above and below
 	 ***/
-		let [p, i] = this.findPrevious(needle)
+		let [p, i] = this.findPrevious(...args)
 		if (i == null) return null // not found, undefined might be more appropriate, but tests say null
 		let matchingNode = (p) ? p.nextNode : this.head
 		return matchingNode.valueOf()
@@ -187,8 +186,8 @@ class LinkedList extends ReplicaOfArray {
  ***
  *** Note that delete is a keyword, so I use the name del
  ***/
-	del(arg) {
-		let [previousNode, index] = this.findPrevious(arg)
+	del(...args) {
+		let [previousNode, index] = this.findPrevious(...args)
 		if (index == null) { // not found
 			return false
 		} else if (index == 0) { // head of list
@@ -198,21 +197,21 @@ class LinkedList extends ReplicaOfArray {
 		}
 		return true
 	}
-	index(needle) {
-		let [p, i] = this.findPrevious(needle)
+	index(...args) {
+		let [p, i] = this.findPrevious(...args)
 		return i
 	}
-	insert(pos, arg) {
+	insert(pos, ...args) {
 		let c = 0
 		let tn = this.head
-		let newNode = new this.factory(arg)
+		let newNode = new this.factory(...args)
 		// Corner case
 		if (pos == 0) {
 			newNode.nextNode = tn
 			this.head = newNode
 		}
 		newNode.nextNode = null
-		// Get the previous node
+		// Get the previous index and node. This could be a seperate method
 		for (let i = 0; i < pos-1; i++) {
 			if (tn) tn = tn.nextNode
 			else return false
@@ -221,11 +220,11 @@ class LinkedList extends ReplicaOfArray {
 		tn.nextNode = newNode
 		return true
 	}
-	insertAfter(needle, arg) {
+	insertAfter(needle, ...args) {
 		let [p, i] = this.findPrevious(needle)
 		if (i == null) return false // needle not found
 		let matchingNode = (p) ? p.nextNode : this.head
-		let newNode = new this.factory(arg)
+		let newNode = new this.factory(...args)
 		newNode.nextNode = matchingNode.nextNode
 		matchingNode.nextNode = newNode
 		return i
