@@ -1,13 +1,12 @@
 
-/***
- *** global constants
- ***/
-
 
 class ReplicaOfArray {
 /***
- *** Some replicas of the functionality of the Array class
- *** This depends on iterator functionality implemented in a subclass
+ *** This class is not used by itself. It compartmentalized my own replicas
+ *** of the functionality of the built-in Array class. These are very basic
+ *** methods. You can INHERIT from ReplicaOfArray into your own classes, it
+ *** doesn't rely on LinkedList, but it does depend on iterator functionality
+ *** implemented fancily below.
  ***/
 	toArray() {
 		let r = []
@@ -19,33 +18,36 @@ class ReplicaOfArray {
 		for (let v of this) n++
 		return n
 	}
+	/***
+	 *** A-HA! A generator function. It uses yield instead of return, and can
+	 *** call yield multiple times.
+	 *** But, note that .entries() is not an official part of ES6
+	 ***/
 	*entries() {
 		let n = 0
-		for (let v of this)
-			yield [n++, v]
+		for (let v of this) yield [n++, v]
 	}
+	includes(needle) { return this.some((x)=>(needle==x)) }
 /***
- *** functional programming found in the Array class
+ *** FUNCTIONAL PROGRAMMING found in the Array class
  ***/
 	*map(fn, this_arg) {
 	/*
 	 * I return TWO arguments to the callback fn, not THREE like Array.map
 	 */
 		let c = 0
-		for (let v of this) {
-			// c++ here runs fn(v, c), and THEN evaluates c=c+1
-			yield fn(v, c++)
-		}
+		// c++ here runs fn(v, c), and THEN evaluates c=c+1
+		for (let v of this) yield fn(v, c++)
 	}
 	forEach(fn, this_arg) {
 	/*
 	 * I return TWO arguments to the callback fn, not THREE like Array.forEach
 	 */
 		let c = 0
-		for (let v of this) {
-			// c++ here runs fn(v, c), and THEN evaluates c=c+1
-			void fn(v, c++) // the void statement ignores any output from fn(), as specified by the JavaScript standard, but can be ignored
-		}
+		// The void statement ignores any output from fn(), as specified
+		// by the JavaScript standard, but can be ignored.
+		// c++ here runs fn(v, c), and THEN evaluates c=c+1
+		for (let v of this) void fn(v, c++)
 	}
 	every(fn, this_arg) {
 		if (this.head) {
@@ -64,10 +66,8 @@ class ReplicaOfArray {
 	 * I return TWO arguments to the callback fn, not THREE like Array.filter
 	 */
 		let c = 0
-		for (let v of this) {
-			// c++ here runs fn(v, c), and THEN evaluates c=c+1
-			if (fn(v, c++)) yield v
-		}
+		// c++ here runs fn(v, c), and THEN evaluates c=c+1
+		for (let v of this) if (fn(v, c++)) yield v
 	}
 	reduce(fn, init) {
 	/*
@@ -75,28 +75,26 @@ class ReplicaOfArray {
 	 */
 		let c = 0
 		let lv = init
-		for (let v of this) {
-			// c++ here runs fn(lv, v, c), and THEN evaluates c=c+1
-			lv = fn(lv, v, c++)
-		}
+		// c++ here runs fn(lv, v, c), and THEN evaluates c=c+1
+		for (let v of this) lv = fn(lv, v, c++)
 		return lv
-	}
-	includes(arg) {
-		return this.some((x)=>(arg==x))
 	}
 }
 
 class LinkedList extends ReplicaOfArray {
 /***
- ***
+ *** I'm a class encapsulating a linked list. I DO NOT need a ListNode object, but
+ *** I'll work with one. 
  ***/
 	constructor(factory, head) {
-		super()
-		this.factory = factory || ListNode
-		this.head = head || null
-	}
-	toString() {
-		return this.toArray().join(' -> ')
+		// factory can be a ListNode, but JavaScript allows me to use regular
+		// strings, which is what the test suite expects. In the wild, usually
+		// an object. I utilize the .nextNode member, which is hardcoded.
+		super() // Don't worry about this too much. It's required because I'm
+			// INHERITING from another class. You can tell I'm inheriting
+			// because this class has `extends ReplicaOfArray' above.
+		this.factory	= factory || ListNode
+		this.head	= head || null
 	}
 /***
  *** Core methods, these look the same as textbook linked list algorithms 
@@ -151,12 +149,12 @@ class LinkedList extends ReplicaOfArray {
  ***/
 	findPrevious(needle, matcher=(a,b)=>{return (a==b)}, value_if_not_found=[null, null]) {
 	/***
-	 *** I return a tuple, [previousNode, index] where (previousNode.nextNode.valueOf() == needle)
-	 *** or [null, 0] if at the head of the list
-	 *** If needle is not found, return the tail of the linked list.
+	 *** I return a tuple, [previousNode, index] where (previousNode.nextNode.valueOf() == needle),
+	 *** or [null, 0] if its found at the head of the list
+	 *** If needle is not found, return [null, null]
 	 *** 
 	 *** This function is quite useful elsewhere, most often followed by:
-		if (i == null) { do something because it's not found }
+		if (i == null) { .. do something because it's not found .. }
 		let matchingNode = (p) ? p.nextNode : this.head
 	 ***
 	 ***/
@@ -198,8 +196,9 @@ class LinkedList extends ReplicaOfArray {
 		return true
 	}
 	index(...args) {
-		let [p, i] = this.findPrevious(...args)
-		return i
+		// I'm just a wrapper for the .findPrevious() method. It returns a previous
+		// node and an index, but I'm just interested in the index
+		return this.findPrevious(...args)[1]
 	}
 	insert(pos, ...args) {
 		let c = 0
@@ -211,22 +210,22 @@ class LinkedList extends ReplicaOfArray {
 			this.head = newNode
 		}
 		newNode.nextNode = null
-		// Get the previous index and node. This could be a seperate method
-		for (let i = 0; i < pos-1; i++) {
-			if (tn) tn = tn.nextNode
-			else return false
+		// Get the previous index and node.
+		for (let i = 1; i < pos; i++) {
+			if (!tn) return false
+			tn = tn.nextNode
 		}
-		newNode.nextNode = tn.nextNode // could be null
-		tn.nextNode = newNode
+		newNode.nextNode	= tn.nextNode // could be null
+		tn.nextNode		= newNode
 		return true
 	}
 	insertAfter(needle, ...args) {
 		let [p, i] = this.findPrevious(needle)
 		if (i == null) return false // needle not found
-		let matchingNode = (p) ? p.nextNode : this.head
-		let newNode = new this.factory(...args)
-		newNode.nextNode = matchingNode.nextNode
-		matchingNode.nextNode = newNode
+		let matchingNode	= (p) ? p.nextNode : this.head
+		let newNode		= new this.factory(...args)
+		newNode.nextNode	= matchingNode.nextNode
+		matchingNode.nextNode	= newNode
 		return i
 	}
 		
@@ -247,7 +246,8 @@ class LinkedList extends ReplicaOfArray {
 
 /***
  *** This is an important definition for the Linked List type. It enables the
- *** acceleration `for (var v of this)` in functions above
+ *** acceleration `for (var v of this)` in functions above.
+ *** The syntax is funny, and you won't see it very often.
  ***/
 LinkedList.prototype[Symbol.iterator] = function* () {
 	let tn = this.head
@@ -256,5 +256,6 @@ LinkedList.prototype[Symbol.iterator] = function* () {
 		tn = tn.nextNode
 	}
 }
+
 
 module.exports = { LinkedList }
