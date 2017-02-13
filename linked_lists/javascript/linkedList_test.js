@@ -45,18 +45,18 @@ describe('LinkedList', function() {
       it.skip('should attach the second element to the first element', function(){
         list.push('pizza');
         list.push('stromboli');
-        expect(list.head.next.data).to.eq('stromboli');
+        expect(list.head.nextNode.data).to.eq('stromboli');
       });
 
-      it.skip('should attach nexts in sequential order', function(){
+      it.skip('should attach nextNodes in sequential order', function(){
         list.push('pizza');
         list.push('stromboli');
         list.push('mushroom');
         list.push('peanutbutter');
         expect(list.head.data).to.eq('pizza');
-        expect(list.head.next.data).to.eq('stromboli');
-        expect(list.head.next.next.data).to.eq('mushroom');
-        expect(list.head.next.next.next.data).to.eq('peanutbutter');
+        expect(list.head.nextNode.data).to.eq('stromboli');
+        expect(list.head.nextNode.nextNode.data).to.eq('mushroom');
+        expect(list.head.nextNode.nextNode.nextNode.data).to.eq('peanutbutter');
       });
     });
   });
@@ -114,12 +114,12 @@ describe('LinkedList', function() {
 
         var output2 = list.pop();
         expect(output2.data).to.eq('world');
-        expect(output2.next).to.eq(null);
+        expect(output2.nextNode).to.eq(null);
         expect(list.length).to.eq(1);
 
         var output3 = list.pop();
         expect(output3.data).to.eq('hello');
-        expect(output3.next).to.eq(null);
+        expect(output3.nextNode).to.eq(null);
         expect(list.length).to.eq(0);
       });
     });
@@ -152,7 +152,7 @@ describe('LinkedList', function() {
       });
 
       it.skip('changes the list _.length', function(){
-        expect(list.head.next.data).to.eq('darkness');
+        expect(list.head.nextNode.data).to.eq('darkness');
         expect(list.length).to.eq(5);
         list.delete('friend');
         expect(list.length).to.eq(4);
@@ -162,10 +162,10 @@ describe('LinkedList', function() {
         expect(list.length).to.eq(3);
       });
 
-      it.skip('resets the next property on the node before the deleted node', function(){
-        expect(list.head.next.data).to.eq('darkness');
+      it.skip('resets the nextNode property on the node before the deleted node', function(){
+        expect(list.head.nextNode.data).to.eq('darkness');
         list.delete('darkness');
-        expect(list.head.next.data).to.eq('my');
+        expect(list.head.nextNode.data).to.eq('my');
       });
 
       it.skip('resets the list.head if deleting the first node', function(){
@@ -255,7 +255,7 @@ describe('LinkedList', function() {
     it.skip('should return true the node if node in list', function(){
       var result = list.find("hello");
       expect(result.data).to.eq('hello');
-      expect(result.next.data).to.eq('world');
+      expect(result.nextNode.data).to.eq('world');
     });
 
     it.skip('should return null if node is missing', function(){

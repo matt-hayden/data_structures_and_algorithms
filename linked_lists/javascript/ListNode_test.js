@@ -11,22 +11,22 @@ describe('ListNode', function() {
      expect(pizzaNode.data).to.eq('pizza');
    });
 
-   it('should have a default empty next', function() {
+   it('should have a default empty nextNode', function() {
      var node = new ListNode('pizza');
-     expect(node.next).to.eq(null);
+     expect(node.nextNode).to.eq(null);
    });
 
-   it('should allow setting a next', function() {
+   it('should allow setting a nextNode', function() {
      var n1 = new ListNode('pizza');
      var n2 = new ListNode('cats');
-     n1.next = n2;
-     expect(n1.next.data).to.eq('cats');
-     expect(n1.next instanceof ListNode).to.be.true;
+     n1.nextNode = n2;
+     expect(n1.nextNode.data).to.eq('cats');
+     expect(n1.nextNode instanceof ListNode).to.be.true;
    });
 
-   it('should allow a next node argument on creation', function(){
+   it('should allow a nextNode node argument on creation', function(){
      var node = new ListNode('pizza', new ListNode('cats'));
-     expect(node.next.data).to.eq('cats');
-     expect(node.next instanceof ListNode).to.be.true;
+     expect(node.nextNode.data).to.eq('cats');
+     expect(node.nextNode instanceof ListNode).to.be.true;
    });
 });
